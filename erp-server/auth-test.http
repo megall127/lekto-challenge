@@ -1,0 +1,56 @@
+### Teste de Cadastro de Usuário
+POST https://localhost:7000/api/usuario/cadastrar
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "cpf": "12345678901",
+  "email": "joao@email.com",
+  "senha": "123456",
+  "enderecos": [
+    {
+      "logradouro": "Rua das Flores",
+      "numero": "123",
+      "complemento": "Apto 45",
+      "bairro": "Centro",
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "cep": "01234567"
+    }
+  ]
+}
+
+### Teste de Login
+POST https://localhost:7000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com",
+  "senha": "123456"
+}
+
+### Teste de Validação de Token (substitua YOUR_TOKEN pelo token retornado no login)
+POST https://localhost:7000/api/auth/validar-token
+Content-Type: application/json
+
+{
+  "token": "YOUR_TOKEN_HERE"
+}
+
+### Teste de Login com credenciais inválidas
+POST https://localhost:7000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com",
+  "senha": "senha_errada"
+}
+
+### Teste de Login com email inexistente
+POST https://localhost:7000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "inexistente@email.com",
+  "senha": "123456"
+}

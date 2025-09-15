@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vrfJLNnr3DyTQIoXufRy4wNu32MMCHBzhbVv759SoZY=",
+  "Source": "erp-server",
+  "BasePath": "_content/erp-server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
