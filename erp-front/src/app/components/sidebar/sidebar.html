@@ -1,0 +1,49 @@
+<div class="sidebar">
+  <!-- Logo/Header -->
+  <div class="sidebar-header">
+    <div class="logo">
+      <h2>ERP Sistema</h2>
+    </div>
+  </div>
+
+  <!-- User Info -->
+  <div class="user-info" *ngIf="isAuthenticated && usuarioLogado">
+    <div class="user-avatar">
+      <span>{{ usuarioLogado.nome.charAt(0).toUpperCase() }}</span>
+    </div>
+    <div class="user-details">
+      <span class="user-name">{{ usuarioLogado.nome }}</span>
+      <span class="user-email">{{ usuarioLogado.email }}</span>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a routerLink="/home" routerLinkActive="active" class="nav-link">
+          <span>Dashboard</span>
+        </a>
+      </li>
+      
+      <li class="nav-item" *ngIf="!isAuthenticated">
+        <a routerLink="/register" routerLinkActive="active" class="nav-link">
+          <span>Cadastro</span>
+        </a>
+      </li>
+      
+      <li class="nav-item" *ngIf="!isAuthenticated">
+        <a routerLink="/login" routerLinkActive="active" class="nav-link">
+          <span>Login</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Logout Button -->
+  <div class="sidebar-footer" *ngIf="isAuthenticated">
+    <button class="logout-btn" (click)="logout()">
+      <span>Sair</span>
+    </button>
+  </div>
+</div>

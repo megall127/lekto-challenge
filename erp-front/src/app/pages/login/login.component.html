@@ -1,0 +1,57 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>ERP Médico</h1>
+      <p>Faça login para acessar o sistema</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          placeholder="seu@email.com"
+          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        >
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email é obrigatório</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input 
+          type="password" 
+          id="senha" 
+          formControlName="senha"
+          placeholder="Sua senha"
+          [class.error]="loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched"
+        >
+        <div class="error-message" *ngIf="loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched">
+          <span *ngIf="loginForm.get('senha')?.errors?.['required']">Senha é obrigatória</span>
+          <span *ngIf="loginForm.get('senha')?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+        </div>
+      </div>
+
+      <div class="error-message general-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="login-button"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">Entrar</span>
+        <span *ngIf="isLoading">Entrando...</span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Não tem uma conta? <a (click)="goToRegister()" class="link">Cadastre-se</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<div class="address-form-container">
+  <!-- Lista de endereços existentes -->
+  <div class="addresses-list" *ngIf="internalAddresses.length > 0">
+    <h4>Endereços Cadastrados</h4>
+    <div class="address-item" *ngFor="let address of internalAddresses; let i = index">
+      <div class="address-info">
+        <div class="address-main">
+          <strong>{{ address.street }}, {{ address.number }}</strong>
+          <span *ngIf="address.complement"> - {{ address.complement }}</span>
+        </div>
+        <div class="address-details">
+          {{ address.neighborhood }} - {{ address.city }}/{{ address.state }}
+        </div>
+        <div class="address-zipcode">
+          CEP: {{ address.zipcode }}
+        </div>
+      </div>
+      <div class="address-actions">
+        <button 
+          type="button" 
+          class="edit-button" 
+          (click)="editAddress(i)"
+          title="Editar endereço"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button 
+          type="button" 
+          class="remove-button" 
+          (click)="removeAddress(i)"
+          *ngIf="internalAddresses.length > 1"
+          title="Remover endereço"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão para adicionar endereço -->
+  <button type="button" class="add-address-button" (click)="openModal()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {{ internalAddresses.length === 0 ? 'Adicionar Endereço' : 'Adicionar Outro Endereço' }}
+  </button>
+
+  <!-- Modal para adicionar/editar endereço -->
+  <app-modal 
+    [isOpen]="isModalOpen" 
+    [title]="'Adicionar Endereço'" 
+    (close)="closeModal()"
+    size="medium"
+  >
+    <form [formGroup]="addressForm" (ngSubmit)="onSubmit()" class="address-modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="street">Logradouro</label>
+          <input 
+            type="text" 
+            id="street" 
+            formControlName="street"
+            placeholder="Rua, Avenida, etc."
+            [class.error]="addressForm.get('street')?.invalid && addressForm.get('street')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('street')?.invalid && addressForm.get('street')?.touched">
+            Logradouro é obrigatório
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="number">Número</label>
+          <input 
+            type="text" 
+            id="number" 
+            formControlName="number"
+            placeholder="123"
+            [class.error]="addressForm.get('number')?.invalid && addressForm.get('number')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('number')?.invalid && addressForm.get('number')?.touched">
+            Número é obrigatório
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="complement">Complemento</label>
+          <input 
+            type="text" 
+            id="complement" 
+            formControlName="complement"
+            placeholder="Apto, Sala, etc."
+          >
+        </div>
+        <div class="form-group">
+          <label for="neighborhood">Bairro</label>
+          <input 
+            type="text" 
+            id="neighborhood" 
+            formControlName="neighborhood"
+            placeholder="Nome do bairro"
+            [class.error]="addressForm.get('neighborhood')?.invalid && addressForm.get('neighborhood')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('neighborhood')?.invalid && addressForm.get('neighborhood')?.touched">
+            Bairro é obrigatório
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">Cidade</label>
+          <input 
+            type="text" 
+            id="city" 
+            formControlName="city"
+            placeholder="Nome da cidade"
+            [class.error]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">
+            Cidade é obrigatória
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="state">Estado</label>
+          <input 
+            type="text" 
+            id="state" 
+            formControlName="state"
+            placeholder="UF"
+            maxlength="2"
+            [class.error]="addressForm.get('state')?.invalid && addressForm.get('state')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('state')?.invalid && addressForm.get('state')?.touched">
+            Estado é obrigatório
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="zipcode">CEP</label>
+          <input 
+            type="text" 
+            id="zipcode" 
+            formControlName="zipcode"
+            placeholder="00000000"
+            maxlength="8"
+            [class.error]="addressForm.get('zipcode')?.invalid && addressForm.get('zipcode')?.touched"
+          >
+          <div class="error-message" *ngIf="addressForm.get('zipcode')?.invalid && addressForm.get('zipcode')?.touched">
+            <span *ngIf="addressForm.get('zipcode')?.errors?.['required']">CEP é obrigatório</span>
+            <span *ngIf="addressForm.get('zipcode')?.errors?.['pattern']">CEP deve ter 8 dígitos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel-button" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="save-button"
+          [disabled]="addressForm.invalid"
+        >
+          Salvar Endereço
+        </button>
+      </div>
+    </form>
+  </app-modal>
+</div>

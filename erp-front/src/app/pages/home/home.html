@@ -1,0 +1,163 @@
+<div class="dashboard-container">
+  <div class="welcome-section" *ngIf="isAuthenticated && usuarioLogado">
+    <h1>Bem-vindo, {{ usuarioLogado.nome }}! O que deseja fazer hoje?</h1>
+  </div>
+  
+  <div class="welcome-section" *ngIf="!isAuthenticated">
+    <h1>Sistema ERP</h1>
+    <p>Faça login para acessar o dashboard completo</p>
+  </div>
+
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-content">
+        <h3>{{ usuarios.length }}</h3>
+        <p>Usuários Cadastrados</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-content">
+        <h3>{{ getTotalEnderecos() }}</h3>
+        <p>Endereços Registrados</p>
+      </div>
+    </div>
+  
+    
+  </div>
+
+
+  <div class="quick-actions">
+    <h2>Ações Rápidas</h2>
+    <div class="actions-grid">
+      <div class="action-card" (click)="abrirModalCadastro()">
+        <h3>Novo Usuário</h3>
+        <p>Cadastrar um novo usuário no sistema</p>
+      </div>
+      
+      
+      <div class="action-card" *ngIf="!isAuthenticated" (click)="irParaLogin()">
+        <div class="action-icon">🔑</div>
+        <h3>Fazer Login</h3>
+        <p>Acessar sua conta no sistema</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="usuarios-section" *ngIf="!isLoading && !errorMessage">
+    <div class="section-header">
+      <h2>Usuários Cadastrados</h2>
+      <div class="header-actions">
+        <button class="btn-refresh" (click)="carregarUsuarios()">
+          🔄 Atualizar
+        </button>
+        <button class="btn-primary" (click)="abrirModalCadastro()">
+          ➕ Novo Usuário
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="usuarios.length === 0">
+      <div class="empty-icon">👥</div>
+      <h3>Nenhum usuário encontrado</h3>
+      <p>Seja o primeiro a se cadastrar no sistema!</p>
+      <button class="btn-primary" (click)="abrirModalCadastro()">
+        Cadastrar Primeiro Usuário
+      </button>
+    </div>
+
+    <div class="table-wrapper" *ngIf="usuarios.length > 0">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Endereços</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios" class="table-row">
+            <td class="id-cell">
+              <span class="id-badge">{{ usuario.id }}</span>
+            </td>
+            
+            <td class="name-cell">
+              <div class="user-info">
+                <div class="avatar">
+                  {{ usuario.nome.charAt(0).toUpperCase() }}
+                </div>
+                <span class="name">{{ usuario.nome }}</span>
+              </div>
+            </td>
+            
+            <td class="cpf-cell">
+              <code>{{ formatarCPF(usuario.cpf) }}</code>
+            </td>
+            
+            <td class="email-cell">
+              <a [href]="'mailto:' + usuario.email" class="email-link">
+                {{ usuario.email }}
+              </a>
+            </td>
+            
+            <td class="phone-cell">
+              <a [href]="'tel:' + usuario.telefone" class="phone-link">
+                {{ formatarTelefone(usuario.telefone) }}
+              </a>
+            </td>
+            
+            <td class="address-cell">
+              <div class="address-info">
+                <span class="address-count">{{ usuario.enderecos.length }} endereço(s)</span>
+                <div class="address-details" *ngIf="usuario.enderecos.length > 0">
+                  <div class="address-item" *ngFor="let endereco of usuario.enderecos">
+                    <small>
+                      {{ endereco.cidade }}/{{ endereco.estado }}
+                      <br>
+                      {{ endereco.bairro }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </td>
+            
+            <td class="actions-cell">
+              <button 
+                class="btn-edit" 
+                (click)="abrirModalEdicao(usuario)"
+                title="Editar usuário"
+              >
+                ✏️ Editar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Carregando dados do dashboard...</p>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    <div class="error-content">
+      <span>⚠️ {{ errorMessage }}</span>
+      <button class="btn-retry" (click)="carregarUsuarios()">Tentar novamente</button>
+    </div>
+  </div>
+</div>
+
+<app-modal-cadastro-usuario 
+  [isOpen]="isModalCadastroOpen"
+  [usuarioParaEditar]="usuarioParaEditar"
+  (close)="fecharModalCadastro()"
+  (usuarioCadastrado)="onUsuarioCadastrado($event)"
+  (usuarioAtualizado)="onUsuarioAtualizado($event)">
+</app-modal-cadastro-usuario>
